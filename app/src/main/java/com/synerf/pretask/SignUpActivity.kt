@@ -1,20 +1,19 @@
 package com.synerf.pretask
 
-import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
-import com.synerf.pretask.databinding.ActivityIntroBinding
+import com.synerf.pretask.databinding.ActivitySignUpBinding
 
-class IntroActivity : AppCompatActivity() {
+class SignUpActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityIntroBinding
+    private lateinit var binding: ActivitySignUpBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityIntroBinding.inflate(layoutInflater)
+        binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // make activity fullscreen
@@ -28,9 +27,19 @@ class IntroActivity : AppCompatActivity() {
             )
         }
 
-        // intent to go to signup activity on btn click
-        binding.btnSignUpIntro.setOnClickListener {
-            startActivity(Intent(this, SignUpActivity::class.java))
+        // setting up action bar
+        setUpActionBar()
+    }
+
+    private fun setUpActionBar() {
+        setSupportActionBar(binding.toolbarSignUpActivity)
+        val actionBar = supportActionBar
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true)
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
+        }
+        binding.toolbarSignUpActivity.setNavigationOnClickListener {
+            onBackPressed()
         }
     }
 }
