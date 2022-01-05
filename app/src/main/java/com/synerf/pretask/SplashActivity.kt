@@ -1,10 +1,13 @@
 package com.synerf.pretask
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.WindowInsets
 import android.view.WindowManager
 import com.synerf.pretask.databinding.ActivitySplashBinding
@@ -33,5 +36,12 @@ class SplashActivity : AppCompatActivity() {
         // setting custom font and using it for this one text (app name)
         val typeFace: Typeface = Typeface.createFromAsset(assets, "carbon bl.ttf")
         binding.tvAppName.typeface = typeFace
+
+        // move to intro screen after a given time
+        Handler(Looper.getMainLooper()).postDelayed({
+            val intent = Intent(this@SplashActivity, IntroActivity::class.java)
+            startActivity(intent)
+            finish()
+        }, 2500)
     }
 }
