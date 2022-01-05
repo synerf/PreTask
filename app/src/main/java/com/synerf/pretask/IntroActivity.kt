@@ -28,9 +28,14 @@ class IntroActivity : AppCompatActivity() {
             )
         }
 
-        // intent to go to signup activity on btn click
+        // intent to go to signUp activity on btn click
         binding.btnSignUpIntro.setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))
+        }
+
+        // intent to go to signIn activity on btn click
+        binding.btnSignInIntro.setOnClickListener {
+            startActivity(Intent(this, SignInActivity::class.java))
         }
     }
 }

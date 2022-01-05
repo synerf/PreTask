@@ -5,15 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
-import com.synerf.pretask.databinding.ActivitySignUpBinding
+import com.synerf.pretask.databinding.ActivitySignInBinding
 
-class SignUpActivity : AppCompatActivity() {
+class SignInActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivitySignUpBinding
+    private lateinit var binding: ActivitySignInBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySignUpBinding.inflate(layoutInflater)
+        binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // make activity fullscreen
@@ -35,13 +35,13 @@ class SignUpActivity : AppCompatActivity() {
      * function to setup action bar
      */
     private fun setUpActionBar() {
-        setSupportActionBar(binding.toolbarSignUpActivity)
+        setSupportActionBar(binding.toolbarSignInActivity)
         val actionBar = supportActionBar
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true)
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
         }
-        binding.toolbarSignUpActivity.setNavigationOnClickListener {
+        binding.toolbarSignInActivity.setNavigationOnClickListener {
             onBackPressed()
         }
     }
