@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "56825464464",
+    "project_id": "pretask-cafe5",
+    "storage_bucket": "pretask-cafe5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:56825464464:android:cc524b21eb8b90a3953a15",
+        "android_client_info": {
+          "package_name": "com.synerf.pretask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "56825464464-0417dkpekv3p23mf1sa5f7qissvrh9o7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMicxwalTqhNt2KUkN-AIYpITwlY-v92c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "56825464464-0417dkpekv3p23mf1sa5f7qissvrh9o7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

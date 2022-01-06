@@ -1,4 +1,4 @@
-package com.synerf.pretask
+package com.synerf.pretask.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent

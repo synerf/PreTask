@@ -1,7 +1,8 @@
-package com.synerf.pretask
+package com.synerf.pretask.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.synerf.pretask.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

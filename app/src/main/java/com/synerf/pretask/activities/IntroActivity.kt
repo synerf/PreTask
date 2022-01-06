@@ -1,4 +1,4 @@
-package com.synerf.pretask
+package com.synerf.pretask.activities
 
 import android.content.Intent
 import android.os.Build
@@ -8,7 +8,7 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import com.synerf.pretask.databinding.ActivityIntroBinding
 
-class IntroActivity : AppCompatActivity() {
+class IntroActivity : BaseActivity() {
 
     private lateinit var binding: ActivityIntroBinding
 
