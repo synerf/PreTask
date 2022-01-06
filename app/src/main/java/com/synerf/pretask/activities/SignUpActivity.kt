@@ -11,6 +11,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.synerf.pretask.R
 import com.synerf.pretask.databinding.ActivitySignUpBinding
+import com.synerf.pretask.firebase.FirestoreClass
+import com.synerf.pretask.models.User
 
 class SignUpActivity : BaseActivity() {
 
@@ -42,6 +44,21 @@ class SignUpActivity : BaseActivity() {
     }
 
     /**
+     * function to be called when user is registered successfully and entry is made in the firestore database.
+     */
+    fun userRegisteredSuccess() {
+        Toast.makeText(
+            this,
+            "You have successfully registered",
+            Toast.LENGTH_LONG
+        ).show()
+        // hide progress dialog
+        hideProgressDialog()
+        FirebaseAuth.getInstance().signOut()
+        finish()
+    }
+
+    /**
      * function to setup action bar
      */
     private fun setUpActionBar() {
@@ -60,6 +77,7 @@ class SignUpActivity : BaseActivity() {
      * function to register a user
      */
     private fun registerUser() {
+        // data from the textViews
         val name: String = binding.etName.text.toString().trim{ it <= ' ' }
         val email: String = binding.etEmail.text.toString().trim{ it <= ' ' }
         val password: String = binding.etPassword.text.toString().trim{ it <= ' ' }
@@ -72,19 +90,11 @@ class SignUpActivity : BaseActivity() {
             FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
-                    // hide the progress dialog
-                    hideProgressDialog()
                     if (task.isSuccessful) {
                         val firebaseUser: FirebaseUser = task.result!!.user!!
                         val registeredEmail = firebaseUser.email!!
-                        Toast.makeText(
-                            this,
-                            "$name, you have successfully registered " +
-                                    "the email address $registeredEmail",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        FirebaseAuth.getInstance().signOut()
-                        finish()
+                        val user = User(firebaseUser.uid, name, registeredEmail)
+                        FirestoreClass().registerUser(this, user)
                     } else {
                         Toast.makeText(
                             this,
