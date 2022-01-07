@@ -44,21 +44,6 @@ class SignUpActivity : BaseActivity() {
     }
 
     /**
-     * function to be called when user is registered successfully and entry is made in the firestore database.
-     */
-    fun userRegisteredSuccess() {
-        Toast.makeText(
-            this,
-            "You have successfully registered",
-            Toast.LENGTH_LONG
-        ).show()
-        // hide progress dialog
-        hideProgressDialog()
-        FirebaseAuth.getInstance().signOut()
-        finish()
-    }
-
-    /**
      * function to setup action bar
      */
     private fun setUpActionBar() {
@@ -71,6 +56,21 @@ class SignUpActivity : BaseActivity() {
         binding.toolbarSignUpActivity.setNavigationOnClickListener {
             onBackPressed()
         }
+    }
+
+    /**
+     * function to be called when user is registered successfully and entry is made in the firestore database.
+     */
+    fun userRegisteredSuccess() {
+        Toast.makeText(
+            this,
+            "You have successfully registered",
+            Toast.LENGTH_LONG
+        ).show()
+        // hide progress dialog
+        hideProgressDialog()
+        FirebaseAuth.getInstance().signOut()
+        finish()
     }
 
     /**

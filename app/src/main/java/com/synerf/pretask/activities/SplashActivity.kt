@@ -11,6 +11,7 @@ import android.os.Looper
 import android.view.WindowInsets
 import android.view.WindowManager
 import com.synerf.pretask.databinding.ActivitySplashBinding
+import com.synerf.pretask.firebase.FirestoreClass
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
@@ -37,10 +38,15 @@ class SplashActivity : AppCompatActivity() {
         val typeFace: Typeface = Typeface.createFromAsset(assets, "carbon bl.ttf")
         binding.tvAppName.typeface = typeFace
 
-        // move to intro screen after a given time
+        // move to IntroActivity or MainActivity after a given time
         Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this@SplashActivity, IntroActivity::class.java)
-            startActivity(intent)
+            val currentUserID = FirestoreClass().getCurrentUserId()
+            // if logged in user exists, go to MainActivity, else go to IntroActivity
+            if (currentUserID.isNotEmpty()) {
+                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+            } else {
+                startActivity(Intent(this@SplashActivity, IntroActivity::class.java))
+            }
             finish()
         }, 2500)
     }

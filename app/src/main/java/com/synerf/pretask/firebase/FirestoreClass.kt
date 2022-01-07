@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.synerf.pretask.activities.SignInActivity
 import com.synerf.pretask.activities.SignUpActivity
 import com.synerf.pretask.models.User
 import com.synerf.pretask.utils.Constants
@@ -39,7 +40,42 @@ class FirestoreClass {
             }
     }
 
+    /**
+     * function to get signed in user data
+     */
+    fun signInUser(activity: SignInActivity) {
+        mFireStore.collection(Constants.USERS)
+            // Document ID for users fields. Here the document is the User ID.
+            .document(getCurrentUserId())
+            // to get the user info
+            .get()
+            // on success
+            .addOnSuccessListener { document ->
+                val loggedInUser = document.toObject(User::class.java)
+                if (loggedInUser != null) {
+                    activity.signInSuccess(loggedInUser)
+                }
+            }
+            // on failure
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(
+                    "SignInUser",
+                    "Error writing document",
+                    e
+                )
+            }
+    }
+
+    /**
+     * function to get current user id
+     */
     fun getCurrentUserId(): String {
-        return FirebaseAuth.getInstance().currentUser!!.uid
+        var currentUSer = FirebaseAuth.getInstance().currentUser
+        var currentUserID = ""
+        if (currentUSer != null) {
+            currentUserID = currentUSer.uid
+        }
+        return currentUserID
     }
 }

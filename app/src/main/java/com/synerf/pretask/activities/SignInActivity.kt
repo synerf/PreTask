@@ -12,6 +12,8 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.synerf.pretask.R
 import com.synerf.pretask.databinding.ActivitySignInBinding
+import com.synerf.pretask.firebase.FirestoreClass
+import com.synerf.pretask.models.User
 
 class SignInActivity : BaseActivity() {
 
@@ -64,6 +66,16 @@ class SignInActivity : BaseActivity() {
     }
 
     /**
+     * function to be called after user is signed in
+     */
+    fun signInSuccess(user: User) {
+        // hide progress dialog
+        hideProgressDialog()
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
+    }
+
+    /**
      * function to signIn user
      */
     private fun signInRegisteredUser() {
@@ -81,10 +93,7 @@ class SignInActivity : BaseActivity() {
                     hideProgressDialog()
                     if (task.isSuccessful) {
                         // Sign in success
-                        Log.d("Sign in", "signInWithEmail:success")
-                        val user = auth.currentUser
-                        // intent to move to main activity
-                        startActivity(Intent(this, MainActivity::class.java))
+                        FirestoreClass().signInUser(this)
                     } else {
                         // If sign in fails
                         Log.w("Sign in", "signInWithEmail:failure", task.exception)
