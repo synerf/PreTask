@@ -4,13 +4,17 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.core.view.GravityCompat
+import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.synerf.pretask.R
 import com.synerf.pretask.databinding.ActivityMainBinding
+import com.synerf.pretask.firebase.FirestoreClass
+import com.synerf.pretask.models.User
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -26,6 +30,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         // when clicked on item from drawer
         binding.navView.setNavigationItemSelectedListener(this)
+
+        // again sign in the user when main activity starts
+        FirestoreClass().signInUser(this)
     }
 
     /**
@@ -99,5 +106,21 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         // when user clicked on anything, close the drawer
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    /**
+     * function to update navigation user details
+     */
+    fun updateNavigationUserDetails(user: User) {
+        // set profile image in circularImageView
+        Glide
+            .with(this)
+            .load(user.image)
+            .centerCrop()
+            .placeholder(R.drawable.ic_user_place_holder)
+            .into(findViewById(R.id.nav_user_image))
+
+        // set username in textView
+        findViewById<TextView>(R.id.tv_username).text = user.name
     }
 }

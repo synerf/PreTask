@@ -1,9 +1,11 @@
 package com.synerf.pretask.firebase
 
+import android.app.Activity
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.synerf.pretask.activities.MainActivity
 import com.synerf.pretask.activities.SignInActivity
 import com.synerf.pretask.activities.SignUpActivity
 import com.synerf.pretask.models.User
@@ -43,7 +45,7 @@ class FirestoreClass {
     /**
      * function to get signed in user data
      */
-    fun signInUser(activity: SignInActivity) {
+    fun signInUser(activity: Activity) {
         mFireStore.collection(Constants.USERS)
             // Document ID for users fields. Here the document is the User ID.
             .document(getCurrentUserId())
@@ -52,13 +54,31 @@ class FirestoreClass {
             // on success
             .addOnSuccessListener { document ->
                 val loggedInUser = document.toObject(User::class.java)
-                if (loggedInUser != null) {
-                    activity.signInSuccess(loggedInUser)
+
+                when(activity) {
+                    is SignInActivity -> {
+                        if (loggedInUser != null) {
+                            activity.signInSuccess(loggedInUser)
+                        }
+                    }
+                    is MainActivity -> {
+                        if (loggedInUser != null) {
+                            activity.updateNavigationUserDetails(loggedInUser)
+                        }
+                    }
                 }
             }
+
             // on failure
             .addOnFailureListener { e ->
-                activity.hideProgressDialog()
+                when(activity) {
+                    is SignInActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is MainActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                }
                 Log.e(
                     "SignInUser",
                     "Error writing document",
