@@ -2,10 +2,12 @@ package com.synerf.pretask.firebase
 
 import android.app.Activity
 import android.util.Log
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.synerf.pretask.activities.MainActivity
+import com.synerf.pretask.activities.MyProfileActivity
 import com.synerf.pretask.activities.SignInActivity
 import com.synerf.pretask.activities.SignUpActivity
 import com.synerf.pretask.models.User
@@ -42,10 +44,34 @@ class FirestoreClass {
             }
     }
 
+    fun updateUserProfileData(activity: MyProfileActivity, userHashMap: HashMap<String, Any>) {
+        mFireStore.collection(Constants.USERS)
+            .document(getCurrentUserId())
+            .update(userHashMap)
+            .addOnSuccessListener {
+                Log.i(activity.javaClass.simpleName, "Profile data updated successfully!")
+                Toast.makeText(
+                    activity,
+                    "Profile updated successfully!",
+                    Toast.LENGTH_LONG
+                ).show()
+                activity.profileUpdateSuccess()
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error when updating the profile")
+                Toast.makeText(
+                    activity,
+                    "Error when updating the profile",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+    }
+
     /**
-     * function to get signed in user data
+     * function to load user data
      */
-    fun signInUser(activity: Activity) {
+    fun loadUserData(activity: Activity) {
         mFireStore.collection(Constants.USERS)
             // Document ID for users fields. Here the document is the User ID.
             .document(getCurrentUserId())
@@ -53,18 +79,17 @@ class FirestoreClass {
             .get()
             // on success
             .addOnSuccessListener { document ->
-                val loggedInUser = document.toObject(User::class.java)
+                val loggedInUser = document.toObject(User::class.java)!!
 
                 when(activity) {
                     is SignInActivity -> {
-                        if (loggedInUser != null) {
-                            activity.signInSuccess(loggedInUser)
-                        }
+                        activity.signInSuccess(loggedInUser)
                     }
                     is MainActivity -> {
-                        if (loggedInUser != null) {
-                            activity.updateNavigationUserDetails(loggedInUser)
-                        }
+                        activity.updateNavigationUserDetails(loggedInUser)
+                    }
+                    is MyProfileActivity -> {
+                        activity.setUserDataInUI(loggedInUser)
                     }
                 }
             }
@@ -76,6 +101,9 @@ class FirestoreClass {
                         activity.hideProgressDialog()
                     }
                     is MainActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is MyProfileActivity -> {
                         activity.hideProgressDialog()
                     }
                 }

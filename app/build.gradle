@@ -45,9 +45,10 @@ dependencies {
     // google material
     implementation 'com.google.android.material:material:1.4.0'
     
-    // firebase fireStore
+    // firebase, fireStore, fireStorage
     implementation 'com.google.firebase:firebase-auth:21.0.1'
     implementation 'com.google.firebase:firebase-firestore:24.0.0'
+    implementation 'com.google.firebase:firebase-storage:20.0.0'
 
     // circular images
     implementation 'de.hdodenhof:circleimageview:3.1.0'

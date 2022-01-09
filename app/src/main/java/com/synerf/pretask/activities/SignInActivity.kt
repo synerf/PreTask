@@ -2,7 +2,6 @@ package com.synerf.pretask.activities
 
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -93,7 +92,7 @@ class SignInActivity : BaseActivity() {
                     hideProgressDialog()
                     if (task.isSuccessful) {
                         // Sign in success
-                        FirestoreClass().signInUser(this)
+                        FirestoreClass().loadUserData(this)
                     } else {
                         // If sign in fails
                         Log.w("Sign in", "signInWithEmail:failure", task.exception)

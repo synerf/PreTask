@@ -22,7 +22,7 @@
 
     <string name="mobile">Mobile</string>
     <string name="update">UPDATE</string>
-    <string name="my_profile">My Profile</string>
+    <string name="my_profile_title">My Profile</string>
 
     <string name="create_board_title">Create Board</string>
     <string name="create">CREATE</string>
