@@ -6,10 +6,8 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.synerf.pretask.activities.MainActivity
-import com.synerf.pretask.activities.MyProfileActivity
-import com.synerf.pretask.activities.SignInActivity
-import com.synerf.pretask.activities.SignUpActivity
+import com.synerf.pretask.activities.*
+import com.synerf.pretask.models.Board
 import com.synerf.pretask.models.User
 import com.synerf.pretask.utils.Constants
 
@@ -30,10 +28,11 @@ class FirestoreClass {
             .document(getCurrentUserId())
             // Here the userInfo are the fields and the SetOption is set to merge.
             .set(userInfo, SetOptions.merge())
+            // execute when success
             .addOnSuccessListener {
-                // Here we call the function of base activity for transferring the result to it.
                 activity.userRegisteredSuccess()
             }
+            // execute when failure
             .addOnFailureListener { e ->
                 activity.hideProgressDialog()
                 Log.e(
@@ -44,6 +43,62 @@ class FirestoreClass {
             }
     }
 
+    /**
+     * A function to make an entry of a board in the firestore database.
+     */
+    fun createBoard(activity: CreateBoardActivity, board: Board) {
+        mFireStore.collection(Constants.BOARDS)
+            // give a random id
+            .document()
+            // Here the board are the fields and the SetOption is set to merge.
+            .set(board, SetOptions.merge())
+            // execute when success
+            .addOnSuccessListener {
+                Log.e(activity.javaClass.simpleName, "Board created successfully")
+                Toast.makeText(
+                    activity,
+                    "Board created successfully",
+                    Toast.LENGTH_LONG
+                ).show()
+                activity.boardCreatedSuccessfully()
+            }
+            // execute when failure
+            .addOnFailureListener { exception ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName,
+                    "Error while creating the board", exception)
+            }
+    }
+
+    /**
+     * function to get boards from database
+     */
+    fun getBoardsList(activity: MainActivity) {
+        mFireStore.collection(Constants.BOARDS)
+            // condition (query)
+            .whereArrayContains(Constants.ASSIGNED_TO, getCurrentUserId())
+            // get board
+            .get()
+            .addOnSuccessListener { document ->
+                Log.e(activity.javaClass.simpleName, document.documents.toString())
+                val boardsList: ArrayList<Board> = ArrayList()
+                for (i in document.documents) {
+                    val board = i.toObject(Board::class.java)!!
+                    board.documentId = i.id
+                    boardsList.add(board)
+                }
+                // populate ui with boards
+                activity.populateBoardsListToUI(boardsList)
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error while fetching the boards", e)
+            }
+    }
+
+    /**
+     * function to update user profile data
+     */
     fun updateUserProfileData(activity: MyProfileActivity, userHashMap: HashMap<String, Any>) {
         mFireStore.collection(Constants.USERS)
             .document(getCurrentUserId())
@@ -71,7 +126,7 @@ class FirestoreClass {
     /**
      * function to load user data
      */
-    fun loadUserData(activity: Activity) {
+    fun loadUserData(activity: Activity, readBoardsList: Boolean = false) {
         mFireStore.collection(Constants.USERS)
             // Document ID for users fields. Here the document is the User ID.
             .document(getCurrentUserId())
@@ -86,7 +141,7 @@ class FirestoreClass {
                         activity.signInSuccess(loggedInUser)
                     }
                     is MainActivity -> {
-                        activity.updateNavigationUserDetails(loggedInUser)
+                        activity.updateNavigationUserDetails(loggedInUser, readBoardsList)
                     }
                     is MyProfileActivity -> {
                         activity.setUserDataInUI(loggedInUser)

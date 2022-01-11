@@ -5,15 +5,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
 import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.synerf.pretask.R
+import com.synerf.pretask.adapters.BoardItemsAdapter
 import com.synerf.pretask.databinding.ActivityMainBinding
+import com.synerf.pretask.databinding.MainContentBinding
 import com.synerf.pretask.firebase.FirestoreClass
+import com.synerf.pretask.models.Board
 import com.synerf.pretask.models.User
+import com.synerf.pretask.utils.Constants
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -22,6 +30,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     companion object {
         const val MY_PROFILE_REQUEST_CODE: Int = 11
     }
+
+    // Global variable to hold name of the user
+    private lateinit var mUserName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +45,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         // when clicked on item from drawer
         binding.navView.setNavigationItemSelectedListener(this)
 
-        // again sign in the user when main activity starts
-        FirestoreClass().loadUserData(this@MainActivity)
+        // load user data
+        FirestoreClass().loadUserData(this@MainActivity, true)
+
+        // when clicked on add button (floating action button)
+        findViewById<FloatingActionButton>(R.id.fab_create_board).setOnClickListener {
+            val intent = Intent(this, CreateBoardActivity::class.java)
+            intent.putExtra(Constants.NAME, mUserName)
+            startActivity(intent)
+        }
     }
 
     /**
@@ -125,7 +143,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     /**
      * function to update navigation user details
      */
-    fun updateNavigationUserDetails(user: User) {
+    fun updateNavigationUserDetails(user: User,  readBoardsList: Boolean) {
+        // variable to hold name of the user
+        mUserName = user.name
+
         // set profile image in circularImageView
         Glide
             .with(this)
@@ -136,5 +157,37 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         // set username in textView
         findViewById<TextView>(R.id.tv_username).text = user.name
+
+        // get boards from database
+        if (readBoardsList) {
+            showProgressDialog(resources.getString(R.string.please_wait))
+            FirestoreClass().getBoardsList(this)
+        }
+    }
+
+    /**
+     * function to show the boards in the UI (populate)
+     */
+    fun populateBoardsListToUI(boardsList: ArrayList<Board>) {
+        // hide progress dialog
+        hideProgressDialog()
+
+        val rvBoardsList = findViewById<RecyclerView>(R.id.rv_boards_list)
+        val tvNoBoardsAvailable = findViewById<TextView>(R.id.tv_no_boards_available)
+
+        if (boardsList.size > 0) {
+            rvBoardsList.visibility = View.VISIBLE
+            tvNoBoardsAvailable.visibility = View.GONE
+
+            rvBoardsList.layoutManager = LinearLayoutManager(this)
+            rvBoardsList.setHasFixedSize(true)
+
+            val adapter = BoardItemsAdapter(this, boardsList)
+            rvBoardsList.adapter = adapter
+            Log.i("POPUI", "Board adapter size: ${adapter.itemCount}")
+        } else {
+            rvBoardsList.visibility = View.GONE
+            tvNoBoardsAvailable.visibility = View.VISIBLE
+        }
     }
 }
