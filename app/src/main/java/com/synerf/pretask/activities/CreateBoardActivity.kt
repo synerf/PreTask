@@ -206,6 +206,8 @@ class CreateBoardActivity : BaseActivity() {
         // hide progress dialog
         hideProgressDialog()
 
+        // this will call on activity result in main activity
+        setResult(Activity.RESULT_OK)
         finish()
     }
 }

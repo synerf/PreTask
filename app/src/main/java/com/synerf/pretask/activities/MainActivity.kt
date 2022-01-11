@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.synerf.pretask.R
 import com.synerf.pretask.adapters.BoardItemsAdapter
 import com.synerf.pretask.databinding.ActivityMainBinding
-import com.synerf.pretask.databinding.MainContentBinding
 import com.synerf.pretask.firebase.FirestoreClass
 import com.synerf.pretask.models.Board
 import com.synerf.pretask.models.User
@@ -29,6 +28,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     companion object {
         const val MY_PROFILE_REQUEST_CODE: Int = 11
+        const val CREATE_BOARD_REQUEST_CODE: Int = 12
     }
 
     // Global variable to hold name of the user
@@ -52,7 +52,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         findViewById<FloatingActionButton>(R.id.fab_create_board).setOnClickListener {
             val intent = Intent(this, CreateBoardActivity::class.java)
             intent.putExtra(Constants.NAME, mUserName)
-            startActivity(intent)
+            startActivityForResult(intent, CREATE_BOARD_REQUEST_CODE)
         }
     }
 
@@ -135,6 +135,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == Activity.RESULT_OK && requestCode == MY_PROFILE_REQUEST_CODE) {
             FirestoreClass().loadUserData(this)
+        } else if(resultCode == Activity.RESULT_OK && requestCode == CREATE_BOARD_REQUEST_CODE){
+            FirestoreClass().getBoardsList(this)
         } else {
             Log.e("Cancelled", "Cancelled")
         }
@@ -185,6 +187,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             val adapter = BoardItemsAdapter(this, boardsList)
             rvBoardsList.adapter = adapter
             Log.i("POPUI", "Board adapter size: ${adapter.itemCount}")
+
+            adapter.setOnClickListener(object: BoardItemsAdapter.OnClickListener {
+                override fun onClick(position: Int, model: Board) {
+                    startActivity(Intent(this@MainActivity, TaskListActivity::class.java))
+                }
+            })
         } else {
             rvBoardsList.visibility = View.GONE
             tvNoBoardsAvailable.visibility = View.VISIBLE

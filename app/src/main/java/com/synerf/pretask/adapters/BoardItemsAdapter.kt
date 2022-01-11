@@ -34,7 +34,7 @@ open class BoardItemsAdapter(
                 .into(holder.itemView.findViewById(R.id.civ_board_image))
 
             holder.itemView.findViewById<TextView>(R.id.tv_name).text = model.name
-            holder.itemView.findViewById<TextView>(R.id.created_by).text = "Created by: ${model.name}"
+            holder.itemView.findViewById<TextView>(R.id.created_by).text = "Created by: ${model.createdBy}"
 
             holder.itemView.setOnClickListener {
                 if (onClickListener != null) {
@@ -46,6 +46,10 @@ open class BoardItemsAdapter(
 
     interface OnClickListener {
         fun onClick(position: Int, model: Board)
+    }
+
+    fun setOnClickListener(onClickListener: OnClickListener) {
+        this.onClickListener = onClickListener
     }
 
     override fun getItemCount(): Int {
