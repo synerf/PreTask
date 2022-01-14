@@ -188,9 +188,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             rvBoardsList.adapter = adapter
             Log.i("POPUI", "Board adapter size: ${adapter.itemCount}")
 
+            // when clicked on a board
             adapter.setOnClickListener(object: BoardItemsAdapter.OnClickListener {
                 override fun onClick(position: Int, model: Board) {
-                    startActivity(Intent(this@MainActivity, TaskListActivity::class.java))
+                    val intent = Intent(this@MainActivity, TaskListActivity::class.java)
+                    intent.putExtra(Constants.DOCUMENT_ID, model.documentId)
+                    startActivity(intent)
                 }
             })
         } else {

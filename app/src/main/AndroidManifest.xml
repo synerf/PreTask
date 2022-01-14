@@ -15,7 +15,9 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.TaskListActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.CreateBoardActivity"
             android:exported="false"
