@@ -120,7 +120,7 @@ class FirestoreClass {
     /**
      * function to create a task list in the board detail.
      */
-    fun addUpdateTaskList(activity: TaskListActivity, board: Board) {
+    fun addUpdateTaskList(activity: Activity, board: Board) {
         val taskListHashMap = HashMap<String, Any>()
         taskListHashMap[Constants.TASK_LIST] = board.taskList
 
@@ -129,10 +129,16 @@ class FirestoreClass {
             .update(taskListHashMap)
             .addOnSuccessListener {
                 Log.e(activity.javaClass.simpleName, "TaskList updated successfully")
-                activity.addUpdateTaskListSuccess()
+                if(activity is TaskListActivity)
+                    activity.addUpdateTaskListSuccess()
+                else if(activity is CardDetailsActivity)
+                    activity.addUpdateTaskListSuccess()
             }
             .addOnFailureListener { exception ->
-                activity.hideProgressDialog()
+                if(activity is TaskListActivity)
+                    activity.hideProgressDialog()
+                else if(activity is CardDetailsActivity)
+                    activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName,
                     "Error while updating the board", exception)
             }

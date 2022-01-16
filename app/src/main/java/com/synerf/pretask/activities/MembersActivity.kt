@@ -1,5 +1,6 @@
 package com.synerf.pretask.activities
 
+import android.app.Activity
 import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -28,6 +29,8 @@ class MembersActivity : BaseActivity() {
 
     // global variable for list of assigned members
     private lateinit var mAssignedMembersList: ArrayList<User>
+
+    private var anyChangesMade: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,7 +140,16 @@ class MembersActivity : BaseActivity() {
 
         val adapter = MemberListItemsAdapter(this, list)
         rvMembersList.adapter = adapter
+    }
 
+    /**
+     * function to set result for activity when back pressed
+     */
+    override fun onBackPressed() {
+        if (anyChangesMade) {
+            setResult(Activity.RESULT_OK)
+        }
+        super.onBackPressed()
     }
 
     /**
@@ -146,6 +158,7 @@ class MembersActivity : BaseActivity() {
     fun memberAssignSuccess(user: User) {
         hideProgressDialog()
         mAssignedMembersList.add(user)
+        anyChangesMade = true
         setUpMembersList(mAssignedMembersList)
     }
 }

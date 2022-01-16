@@ -1,8 +1,10 @@
 package com.synerf.pretask.activities
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
@@ -24,20 +26,22 @@ class TaskListActivity : BaseActivity() {
     // global variable for Board Details
     private lateinit var mBoardDetails: Board
 
+    // global variable for board document id
+    private lateinit var mBoardDocumentId: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTaskListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var boardDocumentId = ""
         if (intent.hasExtra(Constants.DOCUMENT_ID)) {
-            boardDocumentId = intent.getStringExtra(Constants.DOCUMENT_ID)!!
+            mBoardDocumentId = intent.getStringExtra(Constants.DOCUMENT_ID)!!
         }
 
         // Show progress dialog
         showProgressDialog(resources.getString(R.string.please_wait))
         // get board details from database
-        FirestoreClass().getBoardDetails(this, boardDocumentId)
+        FirestoreClass().getBoardDetails(this, mBoardDocumentId)
     }
 
     /**
@@ -75,10 +79,38 @@ class TaskListActivity : BaseActivity() {
             R.id.action_members -> {
                 val intent = Intent(this, MembersActivity::class.java)
                 intent.putExtra(Constants.BOARD_DETAIL, mBoardDetails)
-                startActivity(intent)
+                startActivityForResult(intent, MEMBERS_REQUEST_CODE)
+                return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    /**
+     * function to get result from activity and get board details if changes were made
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == MEMBERS_REQUEST_CODE ||
+                requestCode == CARD_DETAILS_REQUEST_CODE) {
+            // Show progress dialog
+            showProgressDialog(resources.getString(R.string.please_wait))
+            // get board details from database
+            FirestoreClass().getBoardDetails(this, mBoardDocumentId)
+        } else {
+            Log.e("Cancelled", "Cancelled")
+        }
+    }
+
+    /**
+     * function to start CardDetails activity
+     */
+    fun cardDetails(taskListPosition: Int, cardPosition: Int) {
+        val intent = Intent(this, CardDetailsActivity::class.java)
+        intent.putExtra(Constants.BOARD_DETAIL, mBoardDetails)
+        intent.putExtra(Constants.TASK_LIST_ITEM_POSITION, taskListPosition)
+        intent.putExtra(Constants.CARD_LIST_ITEM_POSITION, cardPosition)
+        startActivityForResult(intent, CARD_DETAILS_REQUEST_CODE)
     }
 
     /**
@@ -103,7 +135,7 @@ class TaskListActivity : BaseActivity() {
     }
 
     /**
-     * A function to get the result of add or updating the task list.
+     * A function to set the result of add or updating the task list.
      */
     fun addUpdateTaskListSuccess() {
         hideProgressDialog()
@@ -170,5 +202,10 @@ class TaskListActivity : BaseActivity() {
 
         showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass().addUpdateTaskList(this, mBoardDetails)
+    }
+
+    companion object {
+        const val MEMBERS_REQUEST_CODE: Int = 13
+        const val CARD_DETAILS_REQUEST_CODE: Int = 14
     }
 }

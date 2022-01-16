@@ -8,6 +8,7 @@
         <entry key="..\:/Users/Ashish/AndroidStudioProjects/PreTask/app/src/main/res/drawable/shape_dialog_rounded.xml" value="0.240625" />
         <entry key="..\:/Users/Ashish/AndroidStudioProjects/PreTask/app/src/main/res/drawable/white_border_shape_button_rounded.xml" value="0.240625" />
         <entry key="..\:/Users/Ashish/AndroidStudioProjects/PreTask/app/src/main/res/layout/activity_base.xml" value="0.22447916666666667" />
+        <entry key="..\:/Users/Ashish/AndroidStudioProjects/PreTask/app/src/main/res/layout/activity_card_details.xml" value="0.25" />
         <entry key="..\:/Users/Ashish/AndroidStudioProjects/PreTask/app/src/main/res/layout/activity_create_board.xml" value="0.1693840579710145" />
         <entry key="..\:/Users/Ashish/AndroidStudioProjects/PreTask/app/src/main/res/layout/activity_intro.xml" value="0.22447916666666667" />
         <entry key="..\:/Users/Ashish/AndroidStudioProjects/PreTask/app/src/main/res/layout/activity_main.xml" value="0.21" />
@@ -28,6 +29,7 @@
         <entry key="..\:/Users/Ashish/AndroidStudioProjects/PreTask/app/src/main/res/layout/nav_header_main.xml" value="0.21" />
         <entry key="..\:/Users/Ashish/AndroidStudioProjects/PreTask/app/src/main/res/menu/activity_main_drawer.xml" value="0.22447916666666667" />
         <entry key="..\:/Users/Ashish/AndroidStudioProjects/PreTask/app/src/main/res/menu/menu_add_member.xml" value="0.22447916666666667" />
+        <entry key="..\:/Users/Ashish/AndroidStudioProjects/PreTask/app/src/main/res/menu/menu_delete_card.xml" value="0.22447916666666667" />
         <entry key="..\:/Users/Ashish/AndroidStudioProjects/PreTask/app/src/main/res/menu/menu_members.xml" value="0.22447916666666667" />
       </map>
     </option>
