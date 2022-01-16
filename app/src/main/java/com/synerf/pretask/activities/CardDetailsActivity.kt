@@ -3,6 +3,7 @@ package com.synerf.pretask.activities
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -12,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.synerf.pretask.R
 import com.synerf.pretask.databinding.ActivityCardDetailsBinding
+import com.synerf.pretask.dialogs.LabelColorListDialog
 import com.synerf.pretask.firebase.FirestoreClass
 import com.synerf.pretask.models.Board
 import com.synerf.pretask.models.Card
@@ -30,6 +32,9 @@ class CardDetailsActivity : BaseActivity() {
     // global variable to hold card position
     private var mCardPosition = -1
 
+    // global variable for selected color
+    private var mSelectedColor = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCardDetailsBinding.inflate(layoutInflater)
@@ -45,6 +50,11 @@ class CardDetailsActivity : BaseActivity() {
         binding.etNameCardDetails.setText(mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].name)
         binding.etNameCardDetails.setSelection(binding.etNameCardDetails.text.toString().length)
 
+        mSelectedColor = mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].labelColor
+        if (mSelectedColor.isNotEmpty()) {
+            setColor()
+        }
+
         // when clicked on update button
         binding.btnUpdateCardDetails.setOnClickListener {
             if (binding.etNameCardDetails.text.toString().isNotEmpty()) {
@@ -56,6 +66,11 @@ class CardDetailsActivity : BaseActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+        }
+
+        // when clicked on selectLabelColor
+        binding.tvSelectLabelColor.setOnClickListener {
+            labelColorsListDialog()
         }
     }
 
@@ -131,7 +146,8 @@ class CardDetailsActivity : BaseActivity() {
         val card = Card(
             binding.etNameCardDetails.text.toString(),
             mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].createdBy,
-            mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].assignedTo
+            mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].assignedTo,
+            mSelectedColor
         )
 
         val taskList: ArrayList<Task> = mBoardDetails.taskList
@@ -187,5 +203,49 @@ class CardDetailsActivity : BaseActivity() {
         // Set other dialog properties
         alertDialog.setCancelable(false)
         alertDialog.show()
+    }
+
+    /**
+     * A function to add some static label colors in the list.
+     */
+    private fun colorsList(): ArrayList<String> {
+
+        val colorsList: ArrayList<String> = ArrayList()
+        colorsList.add("#43C86F")
+        colorsList.add("#0C90F1")
+        colorsList.add("#F72400")
+        colorsList.add("#7A8089")
+        colorsList.add("#D57C1D")
+        colorsList.add("#770000")
+        colorsList.add("#0022F8")
+
+        return colorsList
+    }
+
+    /**
+     * function to set color
+     */
+    private fun setColor() {
+        binding.tvSelectLabelColor.text = ""
+        binding.tvSelectLabelColor.setBackgroundColor(Color.parseColor(mSelectedColor))
+    }
+
+    /**
+     * function to show label colors list dialog
+     */
+    private fun labelColorsListDialog() {
+        val colorsList: ArrayList<String> = colorsList()
+        val listDialog = object : LabelColorListDialog(
+            this,
+            colorsList,
+            resources.getString(R.string.str_select_label_color),
+            mSelectedColor
+        ) {
+            override fun onItemSelected(color: String) {
+                mSelectedColor = color
+                setColor()
+            }
+        }
+        listDialog.show()
     }
 }
