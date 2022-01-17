@@ -1,5 +1,10 @@
 # PreTask
 
+<p>PreTask is a project planner app that allows an enterprise to plan their projects work within a team.</p>
+<p>Allows user to register / login with email. User can create task boards and cards to monitor work to be done.</p>
+
+<br>
+<br>
 <table>
   <tr>
     <td>Splash Screen</td>
